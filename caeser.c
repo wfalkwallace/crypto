@@ -1,3 +1,15 @@
+//   *** caeser.c ***
+//
+//   William Falk-Wallace
+//   
+//   A set of methods to encrypt/decrypt according to a simple caeser cipher;
+//   currently only works as expected for ascii (would work for others, but the
+//   offset would be unexpected and decryption would require reusing these
+//   methods, but should work fine - would require an additional offset of 65, 
+//   modulo the size of the encoding scheme)
+//
+//
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +44,7 @@ int pencrypt(const char *plain, int offset)
 	return 0;
 }
 
-//encrypt and print
+//decrypt and print
 int pdecrypt(const char *cipher, int offset)
 {
 	//get string length and make non-const string copy
@@ -57,56 +69,67 @@ int pdecrypt(const char *cipher, int offset)
 	return 0;
 }
 
+//file encrypt
 FILE *fencrypt(char *input, char *output, int offset)
 {
+	//encrypt letter by letter; temp character p[laintext]
 	char p;
+	//input plaintext and output ciphertext files
 	FILE *plain = fopen(input, "r");
 	FILE *cipher = fopen(output, "w");
 
+	//while there're more characters in the plaintext
 	while((p = getc(plain)) != EOF)
 	{
+		//if the character's not a space
 		if(!isspace(p))
+			//make it uppercase, get rid of the ascii offset
 			putc((toupper(p) - 65 + offset) % 26 + 65, cipher);
 
 	}
+	//close the files
 	fclose(plain);
 	fclose(cipher);
 }
-
+//file decrypt
 FILE *fdecrypt(char *input, char *output, int offset)
 {
+	//decrypt letter by letter; temp character c[iphertext]
 	char c;
+	//input ciphertext and output plaintext files
 	FILE *cipher = fopen(input, "r");
 	FILE *plain = fopen(output, "w");
 
+	//while there're more characters in the ciphertext
 	while((c = getc(cipher)) != EOF)
 	{
-		if(!isspace(c))
-			putc((toupper(c) - 65 - offset) % 26 + 65, plain);
+		//should be uppercase already, but just in case; 
+		//spaces shouldn't matter though; get rid of the ascii offset
+		putc((toupper(c) - 65 - offset) % 26 + 65, plain);
 	}
+	//close 'em up
 	fclose(plain);
 	fclose(cipher);
 }
 
-void die(const char *s)
-{
-	perror(s);
-	exit(1);
-}
-
+//Main/Test function
 int main(int argc, char *argv[])
 {
+	//proper usage required
 	if (argc != 5) {
 		fprintf(stderr, "Usage: %s <e/d> <input-file> <output-file> <offset>\n", argv[0]);
 		exit(1);
 	}
 
-	if (*argv[1] == 'e')
+	//encrypt
+	if (toupper(*argv[1]) == 'E')
 		fencrypt(argv[2], argv[3], atoi(argv[4]));
-	else if (*argv[1] == 'd')
+	//decrypt
+	else if (toupper(*argv[1]) == 'D')
 		fdecrypt(argv[2], argv[3], atoi(argv[4]));
+	//not e or d
 	else
 		die("Invlaid Option");
-
+	//done
 	return 0;
 }
