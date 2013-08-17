@@ -57,48 +57,56 @@ int pdecrypt(const char *cipher, int offset)
 	return 0;
 }
 
-FILE *fencrypt(FILE *plain, int offset)
+FILE *fencrypt(char *input, char *output, int offset)
 {
 	char p;
-	FILE *cipher = fopen("out.txt", "w");
+	FILE *plain = fopen(input, "r");
+	FILE *cipher = fopen(output, "w");
+
 	while((p = getc(plain)) != EOF)
 	{
 		if(!isspace(p))
 			putc((toupper(p) - 65 + offset) % 26 + 65, cipher);
+
 	}
+	fclose(plain);
 	fclose(cipher);
 }
 
-FILE *fdecrypt(FILE *cipher, int offset)
+FILE *fdecrypt(char *input, char *output, int offset)
 {
 	char c;
-	FILE *plain = fopen("test.txt", "w");
+	FILE *cipher = fopen(input, "r");
+	FILE *plain = fopen(output, "w");
+
 	while((c = getc(cipher)) != EOF)
 	{
 		if(!isspace(c))
 			putc((toupper(c) - 65 - offset) % 26 + 65, plain);
 	}
 	fclose(plain);
+	fclose(cipher);
+}
+
+void die(const char *s)
+{
+	perror(s);
+	exit(1);
 }
 
 int main(int argc, char *argv[])
 {
-	// char *line = " Hello  World ";
-	// char *line2 = "JGNNQYQTNF";
-	// printf("%s\n", line);
-	// pencrypt(line, 2);
-	// printf("%s\n", line2);
-	// pdecrypt(line2, 2);	
+	if (argc != 5) {
+		fprintf(stderr, "Usage: %s <e/d> <input-file> <output-file> <offset>\n", argv[0]);
+		exit(1);
+	}
 
-	FILE *fp = fopen("test.txt", "r");
-	FILE *fp2 = fopen("out.txt", "r");
-	fencrypt(fp, 2);
-	fdecrypt(fp2, 2);
-	fclose(fp);
-	fclose(fp2);
-
+	if (*argv[1] == 'e')
+		fencrypt(argv[2], argv[3], atoi(argv[4]));
+	else if (*argv[1] == 'd')
+		fdecrypt(argv[2], argv[3], atoi(argv[4]));
+	else
+		die("Invlaid Option");
 
 	return 0;
-
-
 }
