@@ -57,17 +57,48 @@ int pdecrypt(const char *cipher, int offset)
 	return 0;
 }
 
-FILE *fencrypt(FILE *input, int offset)
+FILE *fencrypt(FILE *plain, int offset)
 {
+	char p;
+	FILE *cipher = fopen("out.txt", "w");
+	while((p = getc(plain)) != EOF)
+	{
+		if(!isspace(p))
+			putc((toupper(p) - 65 + offset) % 26 + 65, cipher);
+	}
+	fclose(cipher);
+}
 
+FILE *fdecrypt(FILE *cipher, int offset)
+{
+	char c;
+	FILE *plain = fopen("test.txt", "w");
+	while((c = getc(cipher)) != EOF)
+	{
+		if(!isspace(c))
+			putc((toupper(c) - 65 - offset) % 26 + 65, plain);
+	}
+	fclose(plain);
 }
 
 int main(int argc, char *argv[])
 {
-	char *line = " Hello  World ";
-	char *line2 = "JGNNQYQTNF";
-	printf("%s\n", line);
-	pencrypt(line, 2);
-	printf("%s\n", line2);
-	pdecrypt(line2, 2);	return 0;
+	// char *line = " Hello  World ";
+	// char *line2 = "JGNNQYQTNF";
+	// printf("%s\n", line);
+	// pencrypt(line, 2);
+	// printf("%s\n", line2);
+	// pdecrypt(line2, 2);	
+
+	FILE *fp = fopen("test.txt", "r");
+	FILE *fp2 = fopen("out.txt", "r");
+	fencrypt(fp, 2);
+	fdecrypt(fp2, 2);
+	fclose(fp);
+	fclose(fp2);
+
+
+	return 0;
+
+
 }
