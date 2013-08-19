@@ -28,13 +28,14 @@ int pencrypt(const char *plain, const char *k)
 	strncpy(key, k, keylength + 1);
 
 	//iterate over the original string
-	int i, j; //j->cipher; i->plain
+	int i, j; //j->cipher; i->plain; mostly for removing spaces
 	for(i = j = 0; i < length; i++, j++) 
 	{
-
 		//encrypt character
-		if(!isspace(cipher[i]))
-			cipher[j] = (toupper(cipher[i]) - 65 + toupper(key[(i % keylength)]) - 65) % 26 + 65;
+		if(!isspace(cipher[i])){
+			char c = ((toupper(cipher[i]) - 65) + (toupper(key[(j % keylength)]) - 65));
+			cipher[j] =  (c<0?c+26:c) % 26 + 65;
+		}
 		//or step-back the ciphertext index if it's a space
 		else
 			j--;
@@ -48,24 +49,33 @@ int pencrypt(const char *plain, const char *k)
 }
 
 //decrypt and print
-int pdecrypt(const char *cipher, int offset)
+int pdecrypt(const char *cipher, const char *k)
 {
 	//get string length and make non-const string copy
 	int length = strlen(cipher);
+	int keylength = strlen(k);	
 	char plain[length];
+	char key[keylength];
 	strncpy(plain, cipher, length + 1);
+	//doesnt account for spaces in key yet. that sticks it to ascii too
+	strncpy(key, k, keylength + 1);
 
 	//iterate over the original string
-	int i, j;
+	int i, j; //j->plain; i->cipher
 	for(i = j = 0; i < length; i++, j++) 
 	{
-		//encrypt character
-		if(!isspace(plain[i]))
-			plain[j] = (plain[i] - 65 - offset) % 26 + 65;
-		//or step-back the plaintext index if it's a space
+
+		//decrypt character
+		if(!isspace(plain[i])){
+			char p = ((toupper(plain[i]) - 65) - (toupper(key[(j % keylength)]) - 65));
+			plain[j] = (p<0?p+26:p) % 26 + 65;
+		}
+		//or step-back the ciphertext index if it's a space
 		else
 			j--;
 	}
+	//null-terminate the potentially shorter plaintext string
+	plain[j] = '\0';
 	//print it
 	printf("%s\n", plain);
 	//successful return
@@ -118,8 +128,8 @@ FILE *fdecrypt(char *input, char *output, int offset)
 //Main/Test function
 int main(int argc, char *argv[])
 {
-
 	pencrypt("Hello World", "go");
+	pdecrypt("NSRZUKUFRR", "go");
 	//proper usage required
 	// if (argc != 5) {
 	// 	fprintf(stderr, "Usage: %s <e/d> <input-file> <output-file> <offset>\n", argv[0]);
