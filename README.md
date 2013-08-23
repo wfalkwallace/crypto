@@ -16,7 +16,7 @@
 
 6. El Gamal:
 
-
+7. Morse: Not a cryptosystem, but a fun translator. Ruby because dictionaryies are so nice. also my first ruby program.7. Morse: Not a cryptosystem, but a fun translator. Ruby because dictionaryies are so nice. also my first ruby program.7. Morse: Not a cryptosystem, but a fun translator. Ruby because dictionaryies are so nice. also my first ruby program.7. Morse: Not a cryptosystem, but a fun translator. Ruby because dictionaryies are so nice. also my first ruby program.7. Morse: Not a cryptosystem, but a fun translator. Ruby because dictionaryies are so nice. also my first ruby program.7. Morse: Not a cryptosystem, but a fun translator. Ruby because dictionaryies are so nice. also my first ruby program.7. Morse: Not a cryptosystem, but a fun translator. Ruby because dictionaryies are so nice. also my first ruby program.
 
 [*]These are released under an MIT License. They're more for my own experiments, but feel free to use them for whatever you want.
 
