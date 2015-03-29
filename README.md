@@ -1,4 +1,4 @@
-CRYPTO ![Alt text](icon.png "Lock")
+![Alt text](icon.png "Lock") CRYPTO
 
 ######Cryptographic functions and experiments to get to know some simple cryptosystems.
 
